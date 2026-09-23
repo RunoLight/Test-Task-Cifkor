@@ -20,7 +20,7 @@ namespace Clicker.View
         [SerializeField] private AudioClip clickSound;
 
         [Inject] private ClickerState _state;
-        
+
         private readonly Subject<Unit> _onClick = new();
 
         public IObservable<Unit> OnClick => _onClick.AsObservable();
@@ -28,10 +28,8 @@ namespace Clicker.View
         private Sequence _pressSequence;
         private Vector3 _baseScale;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-
             clickButton.onClick.AddListener(OnClickButton);
 
             _baseScale = buttonImage.transform.localScale;
@@ -57,8 +55,10 @@ namespace Clicker.View
                 );
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             clickButton.onClick.RemoveListener(OnClickButton);
 
             _onClick?.OnCompleted();
@@ -109,7 +109,7 @@ namespace Clicker.View
 
             return Vector2.zero;
         }
-        
+
         private void OnValidate()
         {
             if (clickButton == null)
