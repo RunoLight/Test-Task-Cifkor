@@ -71,3 +71,27 @@ Test application.
 - ❌ Singleton
 - ❌ ECS
 - ❌ Photon/Mirror
+
+## Screenshots
+To check ui repsonsiveness.
+
+### 21:9
+
+<img src="https://github.com/user-attachments/assets/a496e0b0-34b9-42f5-a1e2-69bd3676f300" width="24%" />
+<img src="https://github.com/user-attachments/assets/3b582ac4-4503-4f38-888e-d13a20f03976" width="24%" />
+<img src="https://github.com/user-attachments/assets/44f0720b-738c-485f-9529-193cef82db0f" width="24%" />
+<img src="https://github.com/user-attachments/assets/f75470b1-112d-492b-99d1-bb06ae555a89" width="24%" />
+
+### 16:9
+
+<img src="https://github.com/user-attachments/assets/20c0c4d6-fce5-4d8f-8bd4-497d7c76fbcd" width="24%" />
+<img src="https://github.com/user-attachments/assets/fc854c39-f4f3-44b4-9c52-135e67e71898" width="24%" />
+<img src="https://github.com/user-attachments/assets/cb6b14e5-ede0-487f-9319-4503775b842c" width="24%" />
+<img src="https://github.com/user-attachments/assets/ea46d881-5f9b-4772-8654-fb175cd37f85" width="24%" />
+
+### 4:3
+
+<img src="https://github.com/user-attachments/assets/3f8ba424-0f7c-4068-ad31-71cd000a8d37" width="24%" />
+<img src="https://github.com/user-attachments/assets/f5d0f6b5-a688-47df-8f3a-dc850aa424d9" width="24%" />
+<img src="https://github.com/user-attachments/assets/e0a7bdd7-4a5b-473a-8d06-20f7e84f83af" width="24%" />
+<img src="https://github.com/user-attachments/assets/246395a2-b608-4115-8651-3033059729c3" width="24%" />
