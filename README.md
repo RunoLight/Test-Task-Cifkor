@@ -56,7 +56,7 @@ Test application.
 ### Dog API
 - Base URL: `https://dogapi.dog/api/v2`
 - Breeds: `/breeds?limit=10`
-- Facts: `/breeds/{id}/facts`
+- Facts: `/breeds/{id}/`
 
 ## Patterns
 - **Feature-based MVC/MVP** — each tab is split into Model/View/Controller, and controllers receive dependencies via Zenject
