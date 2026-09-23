@@ -16,7 +16,7 @@ namespace Weather.Controller
     [UsedImplicitly]
     public sealed class WeatherController : IInitializable, IDisposable
     {
-        private readonly RequestQueue _requestQueue;
+        private readonly IRequestQueue _requestQueue;
         private readonly IWeatherApiClient _apiClient;
         private readonly WeatherConfig _config;
         private readonly WeatherView _view;
@@ -30,7 +30,7 @@ namespace Weather.Controller
         private IRequestHandle _activeRequest;
 
         public WeatherController(
-            RequestQueue requestQueue,
+            IRequestQueue requestQueue,
             IWeatherApiClient apiClient,
             WeatherConfig config,
             WeatherView view,

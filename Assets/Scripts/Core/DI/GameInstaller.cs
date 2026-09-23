@@ -1,23 +1,22 @@
-using UnityEngine;
-using Zenject;
-using Core.Navigation;
-using Clicker.Model;
-using Clicker.View;
 using Clicker.Controller;
+using Clicker.Model;
 using Clicker.VFX;
-using Core;
+using Clicker.View;
+using Core.Navigation;
 using Core.Requests;
-using Weather.Model;
-using Weather.View;
-using Weather.Controller;
-using DogBreeds.Model;
-using DogBreeds.View;
 using DogBreeds.Controller;
+using DogBreeds.Model;
 using DogBreeds.Services;
+using DogBreeds.View;
+using UnityEngine;
+using Weather.Controller;
+using Weather.Model;
 using Weather.Services;
 using Weather.Services.WeatherIconLoader;
+using Weather.View;
+using Zenject;
 
-namespace Di
+namespace Core.DI
 {
     public class GameInstaller : MonoInstaller
     {
@@ -38,7 +37,7 @@ namespace Di
         {
             {
                 // Core Services
-                Container.Bind<RequestQueue>().FromNewComponentOnNewGameObject()
+                Container.BindInterfacesAndSelfTo<RequestQueue>()
                     .AsSingle()
                     .NonLazy();
 

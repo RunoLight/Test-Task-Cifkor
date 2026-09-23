@@ -16,7 +16,7 @@ namespace DogBreeds.Controller
     [UsedImplicitly]
     public class DogBreedsController : IInitializable, IDisposable
     {
-        [Inject] private RequestQueue _requestQueue;
+        [Inject] private IRequestQueue _requestQueue;
         [Inject] private IDogApiClient _apiClient;
         [Inject] private DogApiConfig _apiConfig;
         [Inject] private DogBreedsView _view;

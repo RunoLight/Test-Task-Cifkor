@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Core.Requests
 {
-    /// <summary>
-    /// Facade — последовательная очередь HTTP-запросов.
-    /// Все запросы выполняются друг за другом, после завершения предыдущего.
-    /// Поддерживает добавление, отмену и получение результатов.
-    /// </summary>
-    public class RequestQueue : MonoBehaviour
+    [UsedImplicitly]
+    public class RequestQueue : IDisposable, IRequestQueue
     {
         private readonly Queue<IQueuedRequest> _pendingRequests = new();
         private IQueuedRequest _currentRequest;
@@ -132,169 +129,9 @@ namespace Core.Requests
             _isProcessing = false;
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             CancelAll();
-        }
-    }
-
-    public interface IRequestHandle
-    {
-        string Id { get; }
-        bool IsCompleted { get; }
-        bool IsCanceled { get; }
-        void Cancel();
-    }
-
-    internal interface IQueuedRequest : IRequestHandle
-    {
-        UniTask Execute();
-    }
-
-    internal sealed class QueuedRequest<T> : IQueuedRequest
-    {
-        public string Id { get; }
-        private readonly CancellationTokenSource _cts;
-        private readonly Func<CancellationToken, UniTask<T>> _requestFactory;
-        private readonly TimeSpan? _timeout;
-        private readonly System.Threading.Tasks.TaskCompletionSource<T> _tcs;
-
-        public bool IsCompleted { get; private set; }
-        public bool IsCanceled { get; private set; }
-
-        public QueuedRequest(
-            string id,
-            Func<CancellationToken, UniTask<T>> requestFactory,
-            TimeSpan? timeout,
-            System.Threading.Tasks.TaskCompletionSource<T> tcs)
-        {
-            Id = id;
-            _requestFactory = requestFactory;
-            _timeout = timeout;
-            _cts = new CancellationTokenSource();
-            _tcs = tcs;
-        }
-
-        public async UniTask Execute()
-        {
-            try
-            {
-                _cts.Token.ThrowIfCancellationRequested();
-
-                if (_timeout.HasValue)
-                {
-                    _cts.CancelAfter(_timeout.Value);
-                }
-
-                var result = await _requestFactory(_cts.Token);
-
-                if (!_tcs.Task.IsCompleted)
-                {
-                    _tcs.SetResult(result);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                IsCanceled = true;
-                if (!_tcs.Task.IsCompleted)
-                {
-                    _tcs.SetCanceled();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (!_tcs.Task.IsCompleted)
-                {
-                    _tcs.SetException(ex);
-                }
-            }
-            finally
-            {
-                IsCompleted = true;
-                _cts.Dispose();
-            }
-        }
-
-        public void Cancel()
-        {
-            if (IsCompleted)
-                return;
-
-            IsCanceled = true;
-            _cts?.Cancel();
-            if (!_tcs.Task.IsCompleted)
-            {
-                _tcs.SetCanceled();
-            }
-        }
-    }
-
-    internal sealed class QueuedRequestWithCallback<T> : IQueuedRequest
-    {
-        public string Id { get; }
-        private readonly CancellationTokenSource _cts;
-        private readonly Func<CancellationToken, UniTask<T>> _requestFactory;
-        private readonly TimeSpan? _timeout;
-        private readonly Action<T> _onSuccess;
-        private readonly Action<Exception> _onError;
-
-        public bool IsCompleted { get; private set; }
-        public bool IsCanceled { get; private set; }
-
-        public QueuedRequestWithCallback(
-            string id,
-            Func<CancellationToken, UniTask<T>> requestFactory,
-            TimeSpan? timeout,
-            Action<T> onSuccess,
-            Action<Exception> onError)
-        {
-            Id = id;
-            _requestFactory = requestFactory;
-            _timeout = timeout;
-            _cts = new CancellationTokenSource();
-            _onSuccess = onSuccess;
-            _onError = onError;
-        }
-
-        public async UniTask Execute()
-        {
-            try
-            {
-                _cts.Token.ThrowIfCancellationRequested();
-
-                if (_timeout.HasValue)
-                    _cts.CancelAfter(_timeout.Value);
-
-                var result = await _requestFactory(_cts.Token);
-
-                if (!IsCanceled)
-                    _onSuccess?.Invoke(result);
-            }
-            catch (OperationCanceledException)
-            {
-                if (IsCanceled)
-                    return;
-
-                _onError?.Invoke(new TimeoutException($"Request '{Id}' timed out."));
-            }
-            catch (Exception ex)
-            {
-                _onError?.Invoke(ex);
-            }
-            finally
-            {
-                IsCompleted = true;
-                _cts.Dispose();
-            }
-        }
-
-        public void Cancel()
-        {
-            if (IsCompleted)
-                return;
-
-            IsCanceled = true;
-            _cts?.Cancel();
         }
     }
 }
